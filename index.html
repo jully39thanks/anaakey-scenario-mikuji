@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>おみくじアプリ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Noto+Serif+JP:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Step 1: 筒を振る画面 -->
+        <div id="step-shake" class="step active">
+            <h1 class="title">アナアキー<br>公演シナリオみくじ</h1>
+            <p class="instruction">筒をスワイプして振ってね！</p>
+            
+            <div class="omikuji-area">
+                <div id="gauge-container">
+                    <div id="gauge-bar"></div>
+                </div>
+                
+                <div id="omikuji-container">
+                    <!-- 筒本体 -->
+                    <img src="image/syougatsu2_omijikuji2.png" id="omikuji-tsutsu" alt="おみくじの筒" draggable="false">
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: 結果表示画面 -->
+        <div id="step-result" class="step">
+            <div id="paper-container">
+                <div class="paper-roll left"></div>
+                <div class="paper-content">
+                    <div id="result-area" class="result-card">
+                        <h2 id="result-title" class="result-title"></h2>
+                        <div class="image-frame">
+                            <img id="result-image" src="" alt="結果画像">
+                        </div>
+                        <p id="result-desc" class="result-desc"></p>
+                    </div>
+                    <div class="button-group">
+                        <button id="btn-restart" class="btn primary-btn">もう一度遊ぶ</button>
+                        <a href="https://anaakey.com/contact" target="_blank" rel="noopener noreferrer" class="btn secondary-btn">問い合わせはこちら</a>
+                    </div>
+                </div>
+                <div class="paper-roll right"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- パーティクル用コンテナ -->
+    <div id="particles-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
