@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             name: "『緋色と聖剣』",
-            image: "キービジュアル(2).png",
+            image: "キービジュアル(2).png",
             desc: "ここは剣と魔法が活躍する世界。勇者一行は魔王を討伐するべく冒険をしていた。とある日、仲間の商人が伝説の聖剣が眠っているとされる村の話をした。"
         },
         {
