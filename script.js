@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },        
         {
             name: "『ゼロの爆弾』",
-            image: "キービジュアル.png",
+            image: "キービジュアル(1).png",
             desc: "意識が覚醒するとそこは見知らぬ部屋だった。無機質で、冷たい部屋。右腹部に違和感を覚える。肌の内側を撫でる異物感と確かな重み。"
         },        
         {
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             name: "『緋色と聖剣』",
-            image: "キービジュアル.png.png",
+            image: "キービジュアル(2).png",
             desc: "ここは剣と魔法が活躍する世界。勇者一行は魔王を討伐するべく冒険をしていた。とある日、仲間の商人が伝説の聖剣が眠っているとされる村の話をした。"
         },
         {
