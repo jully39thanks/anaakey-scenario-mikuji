@@ -1,0 +1,394 @@
+:root {
+    --primary-color: #d4af37; /* Gold */
+    --bg-color: #4a1525; /* Chic wine red */
+    --paper-color: #fdfaf6;
+    --text-color: #ffffff;
+    --gold: #d4af37;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    touch-action: pan-y; /* Allow vertical scroll, but handle horizontal/custom touch in JS */
+}
+
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background-color: var(--bg-color);
+    background: radial-gradient(circle at center, #632034 0%, #290812 100%);
+    color: var(--text-color);
+    overflow: hidden;
+    /* Prevent text selection and default drag behaviors */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+#app-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+    background: transparent;
+    box-shadow: none;
+}
+
+.step {
+    display: none;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 20px;
+}
+
+.step.active {
+    display: flex;
+    animation: fadeIn 0.5s ease;
+}
+
+.title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 2rem;
+    color: #ffffff;
+    text-align: center;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+    margin-bottom: 15px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    line-height: 1.3;
+}
+
+.instruction {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    backdrop-filter: blur(4px);
+}
+
+/* Gauge */
+#gauge-container {
+    width: 80%;
+    height: 10px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    margin: 0 auto 30px auto;
+    overflow: hidden;
+}
+
+#gauge-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff9800, #f44336);
+    transition: width 0.1s ease-out;
+}
+
+/* Omikuji Cylinder Area */
+.omikuji-area {
+    width: 100%;
+    height: 50vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#omikuji-container {
+    position: relative;
+    width: 150px;
+    height: 250px;
+    /* Centered origin for rotation */
+    transform-origin: center center;
+    touch-action: none; /* Disable browser handling of touch gestures on the cylinder */
+    cursor: grab;
+}
+
+#omikuji-container:active {
+    cursor: grabbing;
+}
+
+#omikuji-tsutsu {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.3));
+    pointer-events: none; /* Let the container handle events */
+}
+
+#omikuji-bou {
+    position: absolute;
+    width: 20px;
+    height: 100px;
+    object-fit: contain;
+    /* Position the stick initially inside/behind the cylinder */
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+#omikuji-bou.hidden {
+    opacity: 0;
+}
+
+/* Animations added via JS classes */
+.shake-animation {
+    animation: shake 0.1s linear infinite;
+}
+
+@keyframes shake {
+    0% { transform: rotate(0deg) translate(0, 0); }
+    25% { transform: rotate(5deg) translate(2px, -2px); }
+    50% { transform: rotate(0deg) translate(0, 0); }
+    75% { transform: rotate(-5deg) translate(-2px, 2px); }
+    100% { transform: rotate(0deg) translate(0, 0); }
+}
+
+.jump-out {
+    opacity: 1 !important;
+    animation: dropDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes dropDown {
+    0% { transform: translate(-50%, 0px) scale(0.5); opacity: 0; }
+    50% { transform: translate(-50%, 150px) scale(1.2) rotate(-10deg); opacity: 1; }
+    100% { transform: translate(-50%, 100px) scale(1.5) rotate(-5deg); opacity: 1; }
+}
+
+/* Flash effect when revealing */
+.flash-effect {
+    animation: flash 1s ease-out forwards;
+}
+
+@keyframes flash {
+    0% { background-color: var(--bg-color); }
+    30% { background-color: #ffffff; }
+    100% { background-color: var(--bg-color); }
+}
+
+/* Cylinder upside down animation */
+.upside-down {
+    animation: turnUpsideDown 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+}
+
+@keyframes turnUpsideDown {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(0, -50px) rotate(180deg); }
+}
+
+/* Paper Reveal Effect */
+#paper-container {
+    width: 90%;
+    max-width: 450px; /* Slightly wider to accommodate longer titles */
+    min-height: 400px;
+    position: relative;
+    perspective: 1000px;
+}
+
+.paper-content {
+    background-color: var(--paper-color);
+    border: 1px solid #e0d4c3;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 50px rgba(0,0,0,0.03);
+    padding: 30px 20px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    transform-origin: top center;
+    opacity: 0;
+    transform: rotateX(-90deg);
+    animation: unrollPaper 1s 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    background-image: 
+        linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.02) 5%, transparent 10%),
+        linear-gradient(90deg, transparent 90%, rgba(0,0,0,0.02) 95%, transparent 100%);
+    color: #333; /* Override text color for paper to ensure visibility */
+}
+
+@keyframes unrollPaper {
+    0% { transform: rotateX(-90deg); opacity: 0; }
+    100% { transform: rotateX(0deg); opacity: 1; }
+}
+
+/* Pseudo-elements for rolled ends (visual flair) */
+.paper-roll {
+    position: absolute;
+    width: 20px;
+    height: 100%;
+    background: linear-gradient(90deg, #d5cbb8, #fdfaf6, #d5cbb8);
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2), 2px 0 5px rgba(0,0,0,0.3);
+    top: 0;
+    z-index: 3;
+    opacity: 0;
+    animation: fadeIn 0.1s 0.3s forwards;
+}
+
+.paper-roll.left {
+    left: -10px;
+    animation: rollLeft 1s 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.paper-roll.right {
+    right: -10px;
+    animation: rollRight 1s 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes rollLeft {
+    0% { transform: translateX(180px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes rollRight {
+    0% { transform: translateX(-180px); }
+    100% { transform: translateX(0); }
+}
+
+/* Result Elements */
+.result-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.result-title {
+    font-size: 1.6rem; /* Slightly smaller for long text */
+    color: #8c1c2e; /* Deep red for the paper */
+    margin-bottom: 20px;
+    font-family: serif;
+    font-weight: bold;
+    border-bottom: 2px solid #8c1c2e;
+    padding-bottom: 5px;
+    text-align: center;
+    word-break: keep-all; /* Don't break Japanese words abruptly */
+    line-height: 1.4;
+}
+
+.result-area.loss .result-title {
+    color: #555;
+    border-bottom-color: #555;
+}
+
+.image-frame {
+    width: 200px;
+    height: 200px;
+    border: 3px solid var(--gold);
+    border-radius: 10px;
+    padding: 10px;
+    background: white;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#result-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.result-desc {
+    font-size: 1.1rem;
+    color: #333;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    font-weight: bold;
+    word-break: auto-phrase; /* Better wrapping for Japanese sentences in modern browsers */
+    white-space: pre-wrap; /* Allows manual newlines \n in the script */
+}
+
+.btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    outline: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-decoration: none; /* For link buttons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on very small screens */
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #4a1525, #290812);
+    color: white;
+    border: 1px solid #632034;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    background: linear-gradient(135deg, #632034, #4a1525);
+}
+
+.primary-btn:active, .secondary-btn:active {
+    transform: translateY(0);
+}
+
+.secondary-btn {
+    background: transparent;
+    color: #4a1525;
+    border: 2px solid #4a1525;
+}
+
+.secondary-btn:hover {
+    background: rgba(74, 21, 37, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Particles */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10;
+}
